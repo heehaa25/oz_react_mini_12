@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.poster {
+  width: 200px;
+  height: auto;
+  object-fit: cover;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.rating {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.genres {
+  font-size: 1em;
+  color: #555;
+}
+
+.overview {
+  font-size: 1em;
+  line-height: 1.4;
+  color: #333;
+}
