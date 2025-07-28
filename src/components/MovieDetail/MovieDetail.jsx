@@ -30,12 +30,12 @@ export default function MovieDetail() {
 
         <div className={styles.title}>
           <h1 className={styles.movietitle}>{title}</h1>
-          <span className={styles.average}>
-            {`평점: ${
-              typeof vote_average === 'number' ? vote_average.toFixed(1) : 'N/A'
-            }`}
-          </span>
         </div>
+        <span className={styles.average}>
+          {`평점: ${
+            typeof vote_average === 'number' ? vote_average.toFixed(1) : 'N/A'
+          }`}
+        </span>
         {genres && (
           <span className={styles.genres}>
             장르: {genres.map((genre) => genre.name).join(' / ')}
