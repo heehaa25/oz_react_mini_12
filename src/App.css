@@ -1,9 +1,11 @@
 .container {
+  width: 85%;
+  margin: auto;
+}
+.list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 0;
-  margin: 0 auto;
-  list-style: none;
   justify-content: center;
+  gap: 1rem;
+  margin-top: 8rem;
 }
