@@ -71,6 +71,10 @@ button:hover {
   background-color: var(--color-gray);
 }
 
+.bar {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   button {
     font-size: 0.8rem;
