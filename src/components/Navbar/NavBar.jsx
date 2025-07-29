@@ -1,76 +1,66 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { GiHamburgerMenu } from 'react-icons/gi';
 import styles from './NavBar.module.css';
-import useDebounce from '../../utils/useDebounced';
+import useDebounce from '../../hooks/useDebounced';
 
 export default function NavBar() {
-  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [text, setText] = useState('');
-  const [searchParams, setSearchParams] = useSearchParams();
-  const debouncedSearchText = useDebounce(text, 500);
-
-  const isInitialMount = useRef(true);
+  const navigate = useNavigate();
+  const debouncedValue = useDebounce(text, 500);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    if (debouncedSearchText) {
-      setSearchParams({ query: debouncedSearchText });
-
-      if (!searchParams.get('query')) {
-        navigate(`/search?query=${encodeURIComponent(debouncedSearchText)}`);
-      }
+    if (debouncedValue) {
+      navigate(`/search?query=${encodeURIComponent(debouncedValue)}`);
     } else {
-      setSearchParams({});
-      if (searchParams.get('query')) {
-      }
+      navigate('/');
     }
-  }, [debouncedSearchText, setSearchParams, navigate, searchParams]);
+  }, [debouncedValue]);
 
-  useEffect(() => {
-    const currentQuery = searchParams.get('query');
-
-    if (currentQuery !== null && currentQuery !== text) {
-      setText(currentQuery);
-    }
-  }, [searchParams]);
-
-  const handleChange = (e) => setText(e.target.value);
+  const handleInputChange = (e) => setText(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trimmedSearchText = text.trim();
-    if (trimmedSearchText) {
-      setSearchParams({ query: trimmedSearchText });
-      navigate(`/search?query=${encodeURIComponent(trimmedSearchText)}`);
-    } else {
-      setSearchParams({});
-      navigate('/');
-    }
+  };
+
+  const handleBarClick = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const handleLogoClick = () => {
+    setText('');
+    navigate('/');
   };
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <Link to='/'>
-          <h1 className={styles.title}>OZ무비</h1>
+          <h1 className={styles.title} onClick={handleLogoClick}>
+            OZ무비
+          </h1>
         </Link>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form
+          onSubmit={handleSubmit}
+          className={`${styles.form} ${isMenuOpen ? styles.active : ''}`}
+        >
           <input
             type='text'
             placeholder='Search...'
             className={styles.input}
             value={text}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
           <div className={styles.btns}>
-            <button>로그인</button>
-            <button>회원가입</button>
+            <button className={styles.btns}>로그인</button>
+            <button className={styles.btns}>회원가입</button>
           </div>
         </form>
+        <button className={styles.bar} onClick={handleBarClick}>
+          <GiHamburgerMenu />
+        </button>
       </div>
     </nav>
   );
