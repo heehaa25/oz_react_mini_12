@@ -1,47 +1,48 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import styles from './MovieDetail.module.css';
 import { getMovieDetail } from '../../api';
+import styles from './MovieDetail.module.css';
 
-export default function movieDetail(movieDetail) {
-  const { id } = useParams();
-  const [detail, setDetail] = useState(movieDetail);
-
-  useEffect(() => {
-    async function loadMovieDetail() {
-      if (id) {
-        const fetchData = await getMovieDetail(id);
-        setDetail(fetchData);
-      } else {
-        setDetail(null);
-      }
-    }
-    loadMovieDetail();
-  }, [id]);
-
+export default function MovieDetail() {
+  const { movieId } = useParams();
+  const [detail, setDetail] = useState([]);
   const { backdrop_path, poster_path, title, vote_average, genres, overview } =
     detail;
-  const baseUrl = 'https://image.tmdb.org/t/p/w500';
+
+  const BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
   const displayImagePath = backdrop_path || poster_path;
-  const src = displayImagePath ? `${baseUrl}${displayImagePath}` : null;
+  const src = displayImagePath ? `${BASE_URL}${backdrop_path}` : null;
+
+  const loadMovieDetail = async () => {
+    const movieDetailData = await getMovieDetail(movieId);
+    setDetail(movieDetailData);
+  };
+
+  useEffect(() => {
+    loadMovieDetail();
+  }, [movieId]);
 
   return (
-    <div className={styles.container}>
-      <img src={src} alt={title} className={styles.poster} />
-      <div className={styles.info}>
-        <div className={styles.titleRow}>
-          <h2 className={styles.title}>{title}</h2>
-          <span className={styles.rating}>
-            {typeof vote_average === 'number' ? vote_average.toFixed(2) : 'N/A'}
+    <div className={styles.maxcontainer}>
+      <section className={styles.container}>
+        {src && <img src={src} alt={title} className={styles.img} />}
+
+        <div className={styles.title}>
+          <h1 className={styles.movietitle}>{title}</h1>
+        </div>
+        <span className={styles.average}>
+          {`평점: ${
+            typeof vote_average === 'number' ? vote_average.toFixed(1) : 'N/A'
+          }`}
+        </span>
+        {genres && (
+          <span className={styles.genres}>
+            장르: {genres.map((genre) => genre.name).join(' / ')}
           </span>
-        </div>
-        <div className={styles.genres}>
-          {genres &&
-            genres.map((genre) => <span key={genre.id}>{genre.name} </span>)}
-        </div>
+        )}
         <p className={styles.overview}>{overview}</p>
-      </div>
+      </section>
     </div>
   );
 }

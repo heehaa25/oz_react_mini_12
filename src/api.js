@@ -9,19 +9,33 @@ const options = {
   },
 };
 
-export async function getMovies() {
-  const url = `${BASE_URL}/movie/popular?${TOKEN}&language=ko-KR&page=1`;
-
-  const response = await fetch(url, options);
-  const data = await response.json();
-  const filtered = data.results.filter((movie) => movie.adult === false);
-
+export async function getMovieData() {
+  const url = `${BASE_URL}/movie/popular?api_token=${TOKEN}&language=ko-KR&page=1`;
+  const res = await fetch(url, options);
+  const data = await res.json();
+  const movies = data.results;
+  const filtered = movies.filter((movie) => movie.adult === false);
   return filtered;
 }
 
-export async function getMovieDetail(id) {
-  const url = `${BASE_URL}/movie/${id}?api_key=${TOKEN}&language=ko-KR`;
-  const response = await fetch(url, options);
-  const data = await response.json();
+export async function getMovieDetail(movieId) {
+  const url = `${BASE_URL}/movie/${movieId}?api_token=${TOKEN}&language=ko-KR`;
+  const res = await fetch(url, options);
+  const data = await res.json();
   return data;
+}
+
+export async function searchMovies(keyword) {
+  const url = `${BASE_URL}/${
+    keyword
+      ? `search/movie?language=ko-KR&query=${encodeURIComponent(keyword)}`
+      : 'movie/popular?language=ko&page=1'
+  }`;
+
+  const res = await fetch(url, options);
+  const data = await res.json();
+  const movies = data.results;
+  const filtered = movies.filter((movie) => movie.adult === false);
+
+  return filtered;
 }
